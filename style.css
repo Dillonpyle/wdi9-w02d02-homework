@@ -1,0 +1,79 @@
+.wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+
+    grid-gap: 1em;
+    border: solid;
+    justify-self: center;
+
+}
+
+/*
+grid-template-columns: [first] 40px [line2] 50px [line3] auto [col4-start] 50px [five] 40px [end];
+  grid-template-rows: [row1-start] 25% [row1-end] 100px [third-line] auto [last-line];
+  
+  display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-gap: 1em;
+    border: solid;
+    justify-self: center;
+  
+  */
+
+.card {
+    width: 200px;
+    height: auto;
+}
+
+.scoreBoard {
+    border: solid;
+
+}
+
+
+.computerCard1 {
+    border: solid;
+}
+
+.computerCard2 {
+    border: solid;
+}
+
+.computerCard3 {
+    border: solid;
+}
+
+.computerPlayedCard {
+    border: solid;
+}
+
+.yourPlayedCard {
+    border: solid;
+}
+
+.deck {
+    border: solid;
+}
+
+.discard {
+    border: solid;
+}
+
+.roundsWon {
+    border: solid;
+
+}
+
+.playerCard1 {
+    border: solid;
+    grid-template-rows: 300px;
+}
+
+.playerCard2 {
+    border: solid;
+
+}
+
+.playerCard3 {
+    border: solid;
+}

@@ -55,6 +55,7 @@ const deckOfCards = [{
     damage: 40
 }]
 
+alert('click on deck to start game');
 const player1 = {
     score: 0,
     playerHand: [],
@@ -85,7 +86,7 @@ let winner = []
 
 let computerWins = []
 
-let rounds = []
+let rounds = 1
 
 //secondary deck
 let shuffledDeck = deckOfCards.map(function (obj) {
@@ -98,7 +99,7 @@ let shuffledDeck = deckOfCards.map(function (obj) {
 //pulled from secondary deck
 let pickRandomCard = () => {
     let rndIdx = Math.floor(Math.random() * shuffledDeck.length);
-    return shuffledDeck.splice(rndIdx, 1);
+    return shuffledDeck.splice(rndIdx, 1)[0];
 
 }
 
@@ -106,100 +107,73 @@ let pickRandomCard = () => {
 
 const dealToComputer = () => {
     while (computer.computerHand.length < 3) {
-        computer.computerHand.push(pickRandomCard());
+        computer.computerHand.push(pickRandomCard())[0];
     }
     console.log(computer.computerHand);
 }
 
 const dealToPlayer = () => {
     while (player1.playerHand.length < 3) {
-        player1.playerHand.push(pickRandomCard());
+        player1.playerHand.push(pickRandomCard())[0];
     }
     console.log(player1.playerHand);
 }
 
 //battle phase
 let battlePhase = () => {
-    if (yourPlayedCard[0][0][0].damage > computerSelectedCard[0][0][0].damage) {
+    if (yourPlayedCard[0].damage > computerSelectedCard[0].damage) {
         player1.updatePlayerScore()
-        console.log('you won');
-    } else if (yourPlayedCard[0][0][0].damage < computerSelectedCard[0][0][0].damage) {
+        alert('you won');
+    } else if (yourPlayedCard[0].damage < computerSelectedCard[0].damage) {
         computer.updateComputerScore()
-        console.log('you lost');
-    } else if (yourPlayedCard[0][0][0].damage === computerSelectedCard[0][0][0].damage) {
-        console.log("you tied");
-
+        alert('you lost');
+    } else if (yourPlayedCard[0].damage === computerSelectedCard[0].damage) {
+        alert("you tied");
     }
+
+    discard.push(yourPlayedCard)[0];
+    discard.push(computerSelectedCard)[0];
+    yourPlayedCard.pop();
+    computerSelectedCard.pop();
+    $(".scoreBoard").text(`Your Score :${player1.score} Computer Score :${computer.score}`);
 }
 
 
 //computer played card
 let computerPickedCard = () => {
     let rndIdx = Math.floor(Math.random() * computer.computerHand.length);
-    return computer.computerHand.splice(rndIdx, 1);
+    return computer.computerHand.splice(rndIdx, 1)[0];
 }
 
 const pushToComputer = () => {
     while (computerSelectedCard.length < 1) {
-        computerSelectedCard.push(computerPickedCard());
+        computerSelectedCard.push(computerPickedCard())[0];
 
         console.log(computerSelectedCard);
     }
 }
 
-//your played card
-let selectedCard = () => {
-    let rndIdx = Math.floor(Math.random() * player1.playerHand.length);
-    return player1.playerHand.splice(rndIdx, 1);
-}
-
-const pushToSelected = () => {
-    while (yourPlayedCard.length < 1) {
-        yourPlayedCard.push(selectedCard());
-
-        console.log(yourPlayedCard);
-    }
-}
-
-//remove cards(objects) from yourPlayedCard and computerSelectedCard puts in discard
-//pile
-
-const removeUsedCards = () => {
-    //to remove from array
-    //yourPlayedCard.pop();
-    //computerSelectedCard.pop();
-    discard.push(yourPlayedCard);
-    discard.push(computerSelectedCard);
-    yourPlayedCard.pop();
-    computerSelectedCard.pop();
-
-}
-
 let startGame = () => {
 
-    for (let i = 0; i < 3; i++) {
-        dealToComputer();
-        dealToPlayer();
-        pushToComputer();
-        pushToSelected();
-        battlePhase();
-        removeUsedCards();
-        gameEnd();
-    }
-    roundsWon();
+    dealToComputer();
+    dealToPlayer();
+    pushToComputer();
 
+    //gameEnd();
+    //roundsWon();
 }
 
 //Rounds one
 const roundsWon = () => {
     if (player1.score > computer.score) {
-        console.log("you won the round");
+        alert("you won the round");
         winner++
     } else if (computer.score > player1.score) {
-        console.log("computer won the round");
+        alert("computer won the round");
         computerWins++
     }
     rounds++
+    $(".roundsWon").text(`current round is :${rounds} Rounds Won :${winner} Computers wins :${computerWins}`);
     resetScore()
 }
 
@@ -210,11 +184,91 @@ const resetScore = () => {
 
 const gameEnd = () => {
     if (shuffledDeck <= 0) {
-        console.log("game over, out of cards");
+        alert("game over, out of cards");
 
     }
 }
 
+const playedCardHistory = () => {
+    if (discard.length % 6 === 0 && discard.length % 12 !== 0) {
+        player1.playerHand.pop()
+        player1.playerHand.pop()
+        player1.playerHand.pop()
+        dealToComputer()
+        dealToPlayer()
+        roundsWon()
+        $(".playerCard1").text(`${player1.playerHand[0].name} ${player1.playerHand[0].damage}`);
+        $(".playerCard2").text(`${player1.playerHand[1].name} ${player1.playerHand[1].damage}`);
+        $(".playerCard3").text(`${player1.playerHand[2].name} ${player1.playerHand[2].damage}`);
+    } else if (discard.length % 12 === 0) {
+        player1.playerHand.pop()
+        player1.playerHand.pop()
+        player1.playerHand.pop()
+        dealToComputer()
+        dealToPlayer()
+        roundsWon()
+        $(".playerCard1").text(`${player1.playerHand[0].name} ${player1.playerHand[0].damage}`);
+        $(".playerCard2").text(`${player1.playerHand[1].name} ${player1.playerHand[1].damage}`);
+        $(".playerCard3").text(`${player1.playerHand[2].name} ${player1.playerHand[2].damage}`);
+    }
+    gameEnd()
+}
 
+const cardSelected1 = () => {
+    player1.playerHand.splice(0, 1, []);
+}
+const cardSelected2 = () => {
+    player1.playerHand.splice(1, 1, []);
+}
 
-//set initial state of menu
+const cardSelected3 = () => {
+    player1.playerHand.splice(2, 1, []);
+}
+// game functionality
+
+$(".playerCard1").click(function () {
+    const pushToSelected = () => {
+        yourPlayedCard.push(player1.playerHand[0]);
+        console.log(yourPlayedCard);
+    }
+    pushToSelected()
+    alert(`you picked ${yourPlayedCard[0].name} & the computer picked ${computerSelectedCard[0].name}`);
+    battlePhase()
+    cardSelected1()
+    playedCardHistory()
+    pushToComputer()
+});
+
+$(".playerCard2").click(function () {
+    const pushToSelected = () => {
+        yourPlayedCard.push(player1.playerHand[1]);
+        console.log(yourPlayedCard);
+    }
+    pushToSelected()
+    alert(`you picked ${yourPlayedCard[0].name} & the computer picked ${computerSelectedCard[0].name}`);
+    battlePhase()
+    cardSelected2()
+    playedCardHistory()
+    pushToComputer()
+});
+
+$(".playerCard3").click(function () {
+    const pushToSelected = () => {
+        yourPlayedCard.push(player1.playerHand[2]);
+        console.log(yourPlayedCard);
+    }
+    pushToSelected()
+    alert(`you picked ${yourPlayedCard[0].name} & the computer picked ${computerSelectedCard[0].name}`);
+    battlePhase()
+    cardSelected3()
+    playedCardHistory()
+    pushToComputer()
+});
+
+$(".deck").click(function () {
+    startGame();
+    $(".playerCard1").text(`${player1.playerHand[0].name} ${player1.playerHand[0].damage}`);
+    $(".playerCard2").text(`${player1.playerHand[1].name} ${player1.playerHand[1].damage}`);
+    $(".playerCard3").text(`${player1.playerHand[2].name} ${player1.playerHand[2].damage}`);
+    console.log("started the game");
+});
